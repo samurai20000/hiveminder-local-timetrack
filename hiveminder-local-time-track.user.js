@@ -118,6 +118,27 @@
         }
     };
 
+    var global_timer = function () {
+        if (!task_running() && new Date().getMinutes() % 10 == 0) {
+                $.jGrowl("What are you doing?");
+        }
+        setTimeout(arguments.callee, 60 * 1000);
+    };
+
+    var task_running = function () {
+        var running = false;
+
+        for (var i in tasks) {
+            var task = tasks[i];
+            if (task.running) {
+                running = true;
+            }
+        }
+
+        return running;
+    };
+
+
     $(".task_container").each(function (i) {
         var task = {
             obj : this,
@@ -126,7 +147,7 @@
             time: 0,
             running: false,
             indicator: indicator.clone()
-        }
+        };
         
         if (w.localStorage.getItem(task.id)) {
             var t = parseInt(w.localStorage.getItem(task.id));
@@ -149,5 +170,6 @@
         .append( task.indicator );
     });
 
+    global_timer();
 })(document, (typeof(unsafeWindow) != "undefined") ? unsafeWindow : window);
 
